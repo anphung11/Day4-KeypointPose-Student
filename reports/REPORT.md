@@ -74,27 +74,41 @@ Luật mới đã bổ sung vào `GUIDELINE_MINI.md` sau khi thống nhất:
 
 | Chỉ số | yolo26n-pose gốc | Sau fine-tune | Chênh |
 | --- | ---: | ---: | ---: |
-| pose_mAP50 | | | |
-| pose_mAP50-95 | | | |
-| pose_precision | | | |
-| pose_recall | | | |
-| box_mAP50-95 | | | |
+| pose_mAP50 | 0.8450 | 0.8450 | +0.0000 |
+| pose_mAP50-95 | 0.6853 | 0.6908 | +0.0055 |
+| pose_precision | 0.9734 | 0.9792 | +0.0058 |
+| pose_recall | 0.8462 | 0.8462 | +0.0000 |
+| box_mAP50-95 | 0.8119 | 0.8041 | -0.0078 |
 
 ### Trả lời năm câu hỏi ở cuối notebook
 
 1. `pose_mAP50-95` thay đổi bao nhiêu? Nếu nó giảm, 20 ảnh của bạn dạy được model
    điều gì mà COCO chưa dạy, và nó làm hỏng điều gì?
+   > Chỉ số `pose_mAP50-95` **tăng nhẹ (+0.0055)**. Dù chỉ học thêm 20 ảnh, bộ nhãn chất lượng cao đã giúp model tăng độ chính xác (`pose_precision` tăng +0.0058) trong việc bắt tâm khớp mà không đánh rơi khả năng nhận diện tổng thể. Nó không làm hỏng gì đáng kể ở phần pose, dù `box_mAP` có giảm nhẹ đôi chút.
 
 2. `box_mAP` và `pose_mAP` chênh nhau bao nhiêu? Model tìm *người* dễ hơn hay tìm
    *khớp* dễ hơn? Vì sao?
+   > `box_mAP50-95` (0.8041) cao hơn `pose_mAP50-95` (0.6908) khoảng **0.1133**. Model tìm *người* (khung box) dễ hơn rất nhiều so với tìm *khớp*. Việc khoanh vùng một khối tổng thể lớn luôn dễ hơn việc phải xác định chính xác tọa độ pixel của 17 điểm nhỏ, đặc biệt khi các điểm này biến dạng liên tục theo tư thế hoặc bị che khuất.
 
 3. Một ảnh test model đoán sai - gọi tên lỗi theo bốn loại của slide 43
    (lệch nhẹ / đảo trái/phải / nhầm người / trượt hẳn):
+   > Ảnh `test_09.jpg`. Model mắc lỗi **Nhầm người** rất nặng. Do hai người ngồi quá sát nhau trên xe máy, phần khung xương thân dưới và tay của người nam (ngồi trước) và người nữ (ngồi sau) bị kéo dính chéo vào nhau thành một mớ hỗn độn màu xanh/cam.
 
 4. Ảnh nào có OKS thấp nhất giữa nhãn của bạn và model? Ai đúng, và bạn dựa vào đâu?
+   > Ảnh `test_07.jpg` (người phụ nữ đứng sau quầy kính). Model đã đoán sai hoàn toàn (Lỗi Trượt hẳn) khi tự động vẽ các điểm đầu gối và mắt cá chân lơ lửng dưới không trung xuyên qua mặt bàn. Con người đúng, vì chúng ta áp dụng luật "mất bằng chứng do bị che/cắt mép thì gán `v=0` (không đặt điểm)", thay vì bắt model phải đoán bừa.
 
 5. Ảnh bạn gán tệ nhất có *cũng* là ảnh model đoán tệ nhất không? Nếu có, điều đó
    nói gì về bức ảnh đó?
+   > Có sự tương đồng. Những tình huống làm khó người gán nhãn nhất (như góc khuất, người chồng chéo lên nhau ở ảnh đi xe máy) cũng chính là những ảnh model vẽ khung xương méo mó nhất (`test_03.jpg`, `test_09.jpg`). Điều này chứng minh rằng khi dữ liệu đầu vào thiếu bằng chứng thị giác, AI cũng "mù mờ" y hệt như con người và không thể tự suy luận ra cấu trúc giải phẫu chuẩn.
+
+## 5. Một rule evidence bạn đã dùng
+
+Chọn một keypoint trong ảnh core mà bạn phải quyết định giữa `v=1` và `v=0`. Nêu ảnh, người,
+khớp, bằng chứng nhìn thấy và lý do chọn trạng thái đó trong 3-5 câu.
+
+> (1) Ở ảnh `train_04.jpg` (người #1), tôi đã phải quyết định trạng thái cho khớp `left_ear` (tai trái). 
+> (2) Bằng chứng thị giác là người này đang đội mũ bảo hiểm trùm kín đầu khi lái xe máy, không thể nhìn thấy lỗ tai bằng mắt thường, nhưng cấu trúc khuôn mặt và quai hàm vẫn hiện rõ. 
+> (3) Dựa vào guideline, vì đầu người vẫn nằm hoàn toàn trong khung ảnh và tôi có đủ căn cứ hình học để ước lượng chính xác vị trí tai đằng sau lớp mũ bảo hiểm, tôi đã đặt điểm tọa độ và chọn cờ **`v=1` (Occluded)** thay vì xóa bỏ nó (v=0).
 
 ## 5. Một rule evidence bạn đã dùng
 
