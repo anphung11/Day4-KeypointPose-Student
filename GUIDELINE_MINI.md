@@ -1,7 +1,7 @@
 # Mini Guideline -- Nhóm
 
-**Nhóm:** \_\_\_\_\_\_\_\_ \| **Người gán:** \_\_\_\_\_\_\_\_ \|
-**Ngày:** \_\_\_\_\_\_\_\_
+ **Người gán:** Phùng Thảo An
+**Ngày:** 16/09/2026
 
 > Điền file này **trong lúc** gán nhãn, không phải sau khi xong. Mỗi lần
 > bạn dừng lại hơn 10 giây để phân vân, đó là một dòng phải ghi vào đây.

@@ -1,6 +1,6 @@
 # Báo cáo Ngày 4 - Keypoint & Pose
 
-Họ tên: ______   Nhóm: ______   Ngày: ______
+Họ tên: Phùng Thảo An   Nhóm: ______   Ngày: 16/09/2026
 
 > Cách dùng: copy file này thành `reports/REPORT.md`. Điền bằng số liệu do công cụ sinh ra;
 > không tự ước lượng hoặc sửa số trong file JSON.
@@ -13,21 +13,20 @@ thời gian gán / 20. -->
 
 | Chỉ số | Giá trị |
 | --- | ---: |
-| Số ảnh đã gán | |
-| Số skeleton | |
-| v=2 / v=1 / v=0 | |
-| Thời gian trung bình mỗi ảnh | |
+| Số ảnh đã gán | 20 |
+| Số skeleton | 29 |
+| v=2 / v=1 / v=0 | 343 / 119 / 31 |
+| Thời gian trung bình mỗi ảnh | 4 phút |
 
 Ba khớp có `%v=1` cao nhất (chép từ `reports/visibility_report.md`):
 
-1.
-2.
-3.
+1. left_ear (62%)
+2. right_ear (41%)
+3. left_wrist (38%)
 
 Chúng có đúng là những khớp bạn thấy khó gán nhất không? Nếu không, giải thích.
 
-<!-- Trả lời 2–4 câu. Phân biệt “hay bị che” với “khó xác định vị trí giải phẫu”; nêu bằng
-chứng nhìn thấy thay vì chỉ nêu cảm giác. -->
+Đúng, đây là những khớp thường xuyên bị che khuất trong tập dữ liệu này. Tuy nhiên, chúng "hay bị che" chứ không hẳn là "khó xác định vị trí giải phẫu". Theo quan sát từ ảnh thực tế, hai tai có tỷ lệ v=1 rất cao do người trong ảnh đội mũ bảo hiểm xe máy. Tương tự, cổ tay trái thường xuyên bị khuất sau tay lái xe máy. Dù tỷ lệ v=1 cao, tôi vẫn có thể dựa vào hướng của đầu mũ bảo hiểm và cẳng tay để ước lượng tự tin tọa độ của các khớp này.
 
 ## 2. Chấm với gold
 
@@ -36,26 +35,22 @@ lần sau rework. Đếm số phần tử trong từng danh sách lỗi, không 
 
 | Chỉ số | Trước rework | Sau rework |
 | --- | ---: | ---: |
-| OKS trung bình | | |
-| OKS@0.50 | | |
-| OKS@0.75 | | |
-| Lỗi `dao_trai_phai` | | |
-| Lỗi `nham_nguoi` | | |
-| Lỗi `xoa_khop_bi_che` | | |
+| OKS trung bình | 0.934 | 0.935 |
+| OKS@0.50 | 1.000 | 1.000 |
+| OKS@0.75 | 1.000 | 1.000 |
+| Lỗi `dao_trai_phai` | 0 | 0 |
+| Lỗi `nham_nguoi` | 2 | 0 |
+| Lỗi `xoa_khop_bi_che` | 0 | 0 |
 
 **Tôi đã sửa gì giữa hai lần chạy** (ghi cụ thể: ảnh nào, người thứ mấy, khớp nào):
 
-<!-- Mỗi dòng phải có: tên ảnh + người thứ mấy + keypoint + thao tác sửa. Không viết “đã sửa
-lại một số lỗi”. -->
-
--
--
--
+- train_03.jpg, người #1, khớp left_hip: Kéo điểm hông trái bị rớt sang cơ thể của người bên cạnh về lại đúng hông của người #1.
+- train_04.jpg, người #1, khớp left_wrist: Kéo điểm cổ tay trái bị dính sang cơ thể bên cạnh về lại đúng tay của người #1.
 
 **Lỗi đảo trái/phải của tôi xảy ra ở ảnh nào?** Ảnh đó dễ hay khó? Nếu là ảnh dễ,
 bạn nghĩ vì sao mình vẫn sai?
 
-<!-- Nếu không có lỗi, ghi rõ “Không có lỗi đảo trái/phải trong toàn bộ 20 ảnh.” -->
+Không có lỗi đảo trái/phải trong toàn bộ 20 ảnh khi chấm với bộ gold. (Các lỗi đảo trái/phải ở ảnh người đạp xe đã được tôi phát hiện và tự sửa từ bước kiểm tra nội bộ trước đó bằng công cụ trực quan hóa).
 
 ## 3. Kiểm chéo
 
@@ -70,10 +65,7 @@ Khớp lệch `%v=1` nhiều nhất giữa hai bảng đếm:
 
 Luật mới đã bổ sung vào `GUIDELINE_MINI.md` sau khi thống nhất:
 
-<!-- Viết một rule kiểm chứng được: điều kiện nhìn thấy/căn cứ vị trí → chọn v=1 hoặc v=0.
-Không chỉ ghi “cẩn thận hơn khi gán”. -->
-
--
+- 
 
 ## 4. Model
 
@@ -89,9 +81,6 @@ Không chỉ ghi “cẩn thận hơn khi gán”. -->
 | box_mAP50-95 | | | |
 
 ### Trả lời năm câu hỏi ở cuối notebook
-
-> Mỗi câu cần trỏ tới ảnh/chỉ số cụ thể. Một con số thấp không tự chứng minh nhãn sai;
-> kiểm lại bằng bằng chứng thị giác và kết quả gold.
 
 1. `pose_mAP50-95` thay đổi bao nhiêu? Nếu nó giảm, 20 ảnh của bạn dạy được model
    điều gì mà COCO chưa dạy, và nó làm hỏng điều gì?
